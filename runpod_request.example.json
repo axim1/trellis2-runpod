@@ -1,0 +1,12 @@
+{
+  "input": {
+    "image_url": "https://example.com/input.png",
+    "resolution": "1024",
+    "randomize_seed": true,
+    "decimation_target": 500000,
+    "texture_size": 2048,
+    "preview_mode": "shaded_forest",
+    "preview_resolution": 512,
+    "include_glb_base64": true
+  }
+}
