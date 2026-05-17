@@ -71,7 +71,7 @@ RUN python -m pip install --retries 10 --timeout 120 --prefer-binary \
     kornia \
     lpips \
     timm \
-    transformers \
+    transformers==4.57.2 \
     xformers==0.0.29.post3
 
 RUN python -m pip install --retries 10 --timeout 120 \
