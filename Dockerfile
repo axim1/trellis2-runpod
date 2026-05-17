@@ -22,6 +22,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     git-lfs \
     libgl1 \
     libglib2.0-0 \
+    libeigen3-dev \
     libjpeg-dev \
     libsm6 \
     libxext6 \
@@ -89,6 +90,9 @@ RUN git clone https://github.com/JeffreyXiang/CuMesh.git /tmp/extensions/CuMesh 
 
 RUN git clone https://github.com/JeffreyXiang/FlexGEMM.git /tmp/extensions/FlexGEMM --recursive && \
     python -m pip install /tmp/extensions/FlexGEMM --no-build-isolation
+
+RUN mkdir -p /workspace/o-voxel/third_party/eigen && \
+    ln -sfn /usr/include/eigen3/Eigen /workspace/o-voxel/third_party/eigen/Eigen
 
 RUN python -m pip install ./o-voxel --no-build-isolation
 
