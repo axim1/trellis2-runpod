@@ -9,6 +9,13 @@ from typing import Any, Dict, Iterable, List, Optional
 os.environ["OPENCV_IO_ENABLE_OPENEXR"] = "1"
 os.environ["PYTORCH_CUDA_ALLOC_CONF"] = "expandable_segments:True"
 
+# Normalize Hugging Face auth env vars so local tests and serverless deployments
+# can provide either name without changing the code.
+if os.environ.get("HF_TOKEN") and not os.environ.get("HUGGING_FACE_HUB_TOKEN"):
+    os.environ["HUGGING_FACE_HUB_TOKEN"] = os.environ["HF_TOKEN"]
+elif os.environ.get("HUGGING_FACE_HUB_TOKEN") and not os.environ.get("HF_TOKEN"):
+    os.environ["HF_TOKEN"] = os.environ["HUGGING_FACE_HUB_TOKEN"]
+
 import cv2
 import numpy as np
 import requests
