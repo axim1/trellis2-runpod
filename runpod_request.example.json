@@ -7,6 +7,6 @@
     "texture_size": 2048,
     "preview_mode": "shaded_forest",
     "preview_resolution": 512,
-    "include_glb_base64": true
+    "include_glb_base64": false
   }
 }

@@ -70,7 +70,7 @@ RUN python -m pip install --retries 10 --timeout 120 --prefer-binary \
     lpips \
     timm \
     transformers \
-    xformers
+    xformers==0.0.29.post3
 
 RUN python -m pip install --retries 10 --timeout 120 \
     git+https://github.com/EasternJournalist/utils3d.git@9a4eb15e4021b67b12c460c7057d642626897ec8

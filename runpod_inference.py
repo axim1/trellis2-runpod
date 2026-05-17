@@ -201,7 +201,7 @@ class GenerationOptions:
             decimation_target=_to_int(input_data.get("decimation_target"), DEFAULTS["decimation_target"]),
             texture_size=_to_int(input_data.get("texture_size"), DEFAULTS["texture_size"]),
             preprocess_image=_to_bool(input_data.get("preprocess_image"), True),
-            include_glb_base64=_to_bool(input_data.get("include_glb_base64"), True),
+            include_glb_base64=_to_bool(input_data.get("include_glb_base64"), False),
             preview_resolution=_to_int(input_data.get("preview_resolution"), DEFAULTS["preview_resolution"]),
             preview_modes=preview_modes,
             ss_guidance_strength=_to_float(
