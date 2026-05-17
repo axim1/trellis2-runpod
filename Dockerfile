@@ -1,3 +1,5 @@
+# syntax=docker/dockerfile:1.7
+
 FROM nvidia/cuda:12.4.1-devel-ubuntu22.04
 
 ENV DEBIAN_FRONTEND=noninteractive \
@@ -38,8 +40,6 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
  && python -m pip install --upgrade pip setuptools wheel packaging
 
 WORKDIR /workspace
-
-COPY . /workspace
 
 RUN python -m pip install --retries 10 --timeout 120 \
     torch==2.6.0 torchvision==0.21.0 \
@@ -91,9 +91,25 @@ RUN git clone https://github.com/JeffreyXiang/CuMesh.git /tmp/extensions/CuMesh 
 RUN git clone https://github.com/JeffreyXiang/FlexGEMM.git /tmp/extensions/FlexGEMM --recursive && \
     python -m pip install /tmp/extensions/FlexGEMM --no-build-isolation
 
+COPY o-voxel /workspace/o-voxel
+
 RUN mkdir -p /workspace/o-voxel/third_party/eigen && \
     ln -sfn /usr/include/eigen3/Eigen /workspace/o-voxel/third_party/eigen/Eigen
 
 RUN python -m pip install ./o-voxel --no-build-isolation
+
+COPY assets /workspace/assets
+COPY configs /workspace/configs
+COPY trellis2 /workspace/trellis2
+COPY app.py /workspace/app.py
+COPY app_texturing.py /workspace/app_texturing.py
+COPY example.py /workspace/example.py
+COPY example_texturing.py /workspace/example_texturing.py
+COPY runpod_handler.py /workspace/runpod_handler.py
+COPY runpod_inference.py /workspace/runpod_inference.py
+COPY runpod_request.example.json /workspace/runpod_request.example.json
+COPY README.md /workspace/README.md
+COPY LICENSE /workspace/LICENSE
+COPY SECURITY.md /workspace/SECURITY.md
 
 CMD ["python", "-u", "runpod_handler.py"]

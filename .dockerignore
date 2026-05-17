@@ -7,3 +7,11 @@ tmp
 *.pyd
 *.ipynb
 results
+.venv
+venv
+.mypy_cache
+.ruff_cache
+.DS_Store
+data_toolkit
+document.md
+train.py
