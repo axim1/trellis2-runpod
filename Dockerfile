@@ -11,7 +11,7 @@ ENV DEBIAN_FRONTEND=noninteractive \
     ATTN_BACKEND=xformers \
     SPARSE_ATTN_BACKEND=xformers \
     CUDA_HOME=/usr/local/cuda \
-    TORCH_CUDA_ARCH_LIST="8.0" \
+    TORCH_CUDA_ARCH_LIST="8.0;8.6;8.9;9.0" \
     HF_HOME=/runpod-volume/huggingface \
     TORCH_HOME=/runpod-volume/torch
 
