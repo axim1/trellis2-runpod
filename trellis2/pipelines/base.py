@@ -25,7 +25,6 @@ class Pipeline:
         """
         import os
         import json
-        from huggingface_hub.errors import HFValidationError, RepositoryNotFoundError
         is_local = os.path.exists(f"{path}/{config_file}")
 
         if is_local:
@@ -43,7 +42,7 @@ class Pipeline:
                 continue
             try:
                 _models[k] = models.from_pretrained(f"{path}/{v}")
-            except (HFValidationError, RepositoryNotFoundError):
+            except Exception:
                 _models[k] = models.from_pretrained(v)
 
         new_pipeline = cls(_models)
