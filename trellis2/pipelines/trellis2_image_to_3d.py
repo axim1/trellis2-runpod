@@ -153,7 +153,9 @@ class Trellis2ImageTo3DPipeline(Pipeline):
         bbox = np.min(bbox[:, 1]), np.min(bbox[:, 0]), np.max(bbox[:, 1]), np.max(bbox[:, 0])
         center = (bbox[0] + bbox[2]) / 2, (bbox[1] + bbox[3]) / 2
         size = max(bbox[2] - bbox[0], bbox[3] - bbox[1])
-        size = int(size * 1)
+        # Keep a modest safety margin so thin structures like chair legs/slats
+        # are less likely to get cropped away during square recentering.
+        size = int(size * 1.2)
         bbox = center[0] - size // 2, center[1] - size // 2, center[0] + size // 2, center[1] + size // 2
         output = output.crop(bbox)  # type: ignore
         output = np.array(output).astype(np.float32) / 255
