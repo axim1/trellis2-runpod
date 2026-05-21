@@ -299,10 +299,18 @@ class TrellisRunpodRuntime:
         start = time.perf_counter()
         try:
             with torch.inference_mode():
+                # Match the official TRELLIS app flow as closely as possible:
+                # preprocess the uploaded image first, then run the pipeline with
+                # preprocess_image disabled so generation operates on the already
+                # prepared foreground crop.
+                processed_image = image
+                if options.preprocess_image:
+                    processed_image = self.pipeline.preprocess_image(image)
+
                 meshes = self.pipeline.run(
-                    image,
+                    processed_image,
                     seed=options.seed,
-                    preprocess_image=options.preprocess_image,
+                    preprocess_image=False,
                     sparse_structure_sampler_params={
                         "steps": options.ss_sampling_steps,
                         "guidance_strength": options.ss_guidance_strength,
