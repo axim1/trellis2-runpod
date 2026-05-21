@@ -55,6 +55,7 @@ RUN python -m pip install --retries 10 --timeout 120 --prefer-binary \
     tzdata
 
 RUN python -m pip install --retries 10 --timeout 120 --prefer-binary \
+    boto3 \
     easydict \
     imageio \
     imageio-ffmpeg \

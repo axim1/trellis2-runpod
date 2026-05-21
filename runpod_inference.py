@@ -20,6 +20,7 @@ import cv2
 import numpy as np
 import requests
 import torch
+import boto3
 from PIL import Image
 
 import o_voxel
@@ -120,6 +121,52 @@ def image_to_data_url(image: Image.Image, fmt: str = "JPEG", quality: int = 90) 
 
 def file_to_base64(path: Path) -> str:
     return base64.b64encode(path.read_bytes()).decode("utf-8")
+
+
+def r2_is_configured() -> bool:
+    return bool(
+        os.environ.get("R2_BUCKET")
+        and os.environ.get("R2_ACCESS_KEY_ID")
+        and os.environ.get("R2_SECRET_ACCESS_KEY")
+        and (os.environ.get("R2_ENDPOINT") or os.environ.get("R2_ACCOUNT_ID"))
+    )
+
+
+def upload_file_to_r2(path: Path, content_type: str = "model/gltf-binary") -> Optional[Dict[str, str]]:
+    if not r2_is_configured():
+        return None
+
+    bucket = os.environ["R2_BUCKET"]
+    endpoint = os.environ.get("R2_ENDPOINT")
+    if not endpoint:
+        endpoint = f"https://{os.environ['R2_ACCOUNT_ID']}.r2.cloudflarestorage.com"
+
+    key_prefix = os.environ.get("R2_KEY_PREFIX", "trellis-models").strip("/")
+    object_key = f"{key_prefix}/{path.name}" if key_prefix else path.name
+
+    client = boto3.client(
+        "s3",
+        region_name="auto",
+        endpoint_url=endpoint,
+        aws_access_key_id=os.environ["R2_ACCESS_KEY_ID"],
+        aws_secret_access_key=os.environ["R2_SECRET_ACCESS_KEY"],
+    )
+    client.upload_file(
+        str(path),
+        bucket,
+        object_key,
+        ExtraArgs={"ContentType": content_type},
+    )
+
+    result: Dict[str, str] = {
+        "glb_storage": "r2",
+        "glb_object_key": object_key,
+        "glb_bucket": bucket,
+    }
+    public_base = os.environ.get("R2_PUBLIC_BASE_URL")
+    if public_base:
+        result["glb_url"] = f"{public_base.rstrip('/')}/{object_key}"
+    return result
 
 
 def load_input_image(input_data: Dict[str, Any]) -> Image.Image:
@@ -377,6 +424,10 @@ class TrellisRunpodRuntime:
             "glb_filename": artifact_path.name,
             "glb_size_bytes": artifact_path.stat().st_size,
         }
+
+        uploaded_glb = upload_file_to_r2(artifact_path)
+        if uploaded_glb:
+            result.update(uploaded_glb)
 
         if options.include_glb_base64:
             result["glb_base64"] = file_to_base64(artifact_path)
